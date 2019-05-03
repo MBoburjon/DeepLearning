@@ -1,0 +1,45 @@
+"""Multi-class classification"""
+
+
+model = Sequential()
+model.add(Dense(64, activation='relu', input_dim=20))
+model.add(Dropout(0.5))
+model.add(Dense(64, activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(10, activation='softmax'))
+sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9,
+nesterov=True)
+model.compile(loss='categorical_crossentropy',
+optimizer=sgd, metrics=['accuracy'])
+
+#####################################
+
+
+"""Binary classification"""
+model = Sequential()
+model.add(Dense(64, input_dim=20, activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(64, activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(1, activation='sigmoid'))
+model.compile(loss='binary_crossentropy', optimizer='rmsprop',
+metrics=['accuracy'])
+
+
+######################################
+
+"""Integrated Keras and scikit_learn"""
+
+def create_model():
+model = Sequential()
+model.add(Dense(6, input_dim=4, kernel_initializer='normal', activation='relu'))
+model.add(Dense(4, kernel_initializer='normal', activation='relu'))
+model.add(Dense(1, kernel_initializer='normal', activation='sigmoid'))
+model.compile(loss='binary_crossentropy', optimizer=‘adam', metrics=['accuracy'])
+return model
+estimator = KerasClassifier(build_fn=create_model, epochs=100, verbose=0)
+cv_scores = cross_val_score(estimator, features, labels, cv=10)
+print(cv_scores.mean())
+
+
+########################################
